@@ -811,7 +811,7 @@ class MemberProfilePage_Controller extends Page_Controller {
 		if ($this->AllowProfileViewing
 		    && $profileFields->find('PublicVisibility', 'MemberChoice')
 		) {
-			$fields->push(new LiteralField('VisibilityNote', '<p>' . _t(
+			$fields->push(new LiteralField('VisibilityNote', '<p class="alert primary"><i class="icon-check"></i>' . _t(
 				'MemberProfiles.CHECKVISNOTE',
 				'Check fields below to make them visible on your public ' .
 				'profile.') . '</p>'));
