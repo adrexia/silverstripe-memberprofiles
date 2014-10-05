@@ -117,17 +117,13 @@ class MemberProfilePage extends Page implements PermissionProvider {
 	public function getCMSFields() {
 		$fields = parent::getCMSFields();
 
-		$fields->addFieldToTab('Root', new TabSet('Profile', _t('MemberProfiles.PROFILE', 'Profile')));
-		$fields->addFieldToTab('Root', new Tab('ContentBlocks', _t('MemberProfiles.CONTENTBLOCKS', 'Content Blocks')));
-		$fields->addFieldToTab('Root', new Tab('Email', _t('MemberProfiles.Email', 'Email')));
-		$fields->fieldByName('Root.Main')->setTitle(_t('MemberProfiles.MAIN', 'Main'));
-
 		$fields->addFieldsToTab('Root.Profile', array(
-			new Tab(
+			new ToggleCompositeField(
 				'Fields',
-				_t('MemberProfiles.FIELDS', 'Fields'),
+				_t('MemberProfiles.PROFILEFIELDS', 'Profile Fields'),
+
 				new GridField(
-					'Fields',
+					'ProfileFields',
 					_t('MemberProfiles.PROFILEFIELDS', 'Profile Fields'),
 					$this->Fields(),
 					$grid = GridFieldConfig_RecordEditor::create()
@@ -135,21 +131,22 @@ class MemberProfilePage extends Page implements PermissionProvider {
 						->removeComponentsByType('GridFieldAddNewButton')
 				)
 			),
-			new Tab(
-				'Groups',
-				_t('MemberProfiles.GROUPS', 'Groups'),
-				$groups = new TreeMultiselectField(
-					'Groups',
-					_t('MemberProfiles.GROUPS', 'Groups'),
-					'Group'
-				),
-				$selectable = new TreeMultiselectField(
-					'SelectableGroups',
-					_t('MemberProfiles.SELECTABLEGROUPS', 'Selectable Groups'),
-					'Group'
-				)
+			new ToggleCompositeField(
+				'MemberGroups',
+				_t('MemberProfiles.GROUPS', 'Member Groups'),
+				array(
+					$groups = new TreeMultiselectField(
+						'Groups',
+						_t('MemberProfiles.GROUPS', 'Groups'),
+						'Group'
+					),
+					$selectable = new TreeMultiselectField(
+						'SelectableGroups',
+						_t('MemberProfiles.SELECTABLEGROUPS', 'Selectable Groups'),
+						'Group'
+					))
 			),
-			new Tab(
+			new ToggleCompositeField(
 				'PublicProfile',
 				_t('MemberProfiles.PUBLICPROFILE', 'Public Profile'),
 				new GridField(
@@ -832,13 +829,12 @@ class MemberProfilePage_Controller extends Page_Controller {
 		if ($this->AllowProfileViewing
 			&& $profileFields->find('PublicVisibility', 'MemberChoice')
 		) {
-			$fields->push(new LiteralField(
-				'VisibilityNote',
-				'<p>' . _t(
-					'MemberProfiles.CHECKVISNOTE',
-					'Check fields below to make them visible on your public profile.'
-				) . '</p>'
-			));
+
+			$fields->push(new LiteralField('VisibilityNote', '<p class="alert primary"><i class="icon-check"></i>' . _t(
+				'MemberProfiles.CHECKVISNOTE',
+				'Check fields below to make them visible on your public ' .
+				'profile.') . '</p>'));
+
 		}
 
 		foreach($profileFields as $profileField) {
