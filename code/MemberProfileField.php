@@ -187,7 +187,7 @@ class MemberProfileField extends DataObject {
 	public function isAlwaysRequired() {
 		return in_array (
 			$this->MemberField,
-			array(Config::inst()->get('Member', 'unique_identifier_field'), 'Password')
+			array(Config::inst()->get('Member', 'get_unique_identifier_field'), 'Password')
 		);
 	}
 
@@ -195,7 +195,7 @@ class MemberProfileField extends DataObject {
 	 * @return bool
 	 */
 	public function isAlwaysUnique() {
-		return $this->MemberField == Config::inst()->get('Member', 'unique_identifier_field');
+		return $this->MemberField == Config::inst()->get('Member', 'get_unique_identifier_field');
 	}
 
 	/**
